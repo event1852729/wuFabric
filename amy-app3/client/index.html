@@ -1,0 +1,176 @@
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hyperledger Fabric  Application</title>
+    <link rel="icon" href="favicon.png" type="image/gif">
+
+    <!-- require jquery and bootstrap scripts -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    
+    <!-- adding style here -->
+    <style type="text/css">
+      header{
+        background-color: lightgray;
+        font-size:20px;
+        padding:15px;
+      }
+      header, .form-group{
+        margin-bottom: 3%;
+      }
+      .form-group{
+        width:50%;
+      }
+      #body{
+        margin-left:3%;
+        margin-right:3%;
+      }
+      .form-control{
+        margin: 8px;
+      }
+      #right_header{
+        width:20%;
+        font-size:15px;
+        margin-right:0px;
+      }
+      #left_header{
+        margin-left:0;
+        width:40%;
+        display:inline-block;
+      } 
+      #id {
+        width:49%;
+        display: inline-block;
+      }
+      table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+      }
+      td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+      }
+      tr:nth-child(even) {
+          background-color: #dddddd;
+      }
+    </style>
+  </head>
+  <body ng-app="application" ng-controller="appController">
+    <header>
+      <div id="left_header">Hyperledger Fabric  Application</div>
+      <i id="right_header">Example Blockchain Application for Introduction to Hyperledger Fabric LFS171x</i>
+    </header>
+
+    <div id="body">
+      <div class="form-group">
+        <label>Query All Card Payment</label>
+        <p><input id="queryAllCardPayment" type="submit" value="Query" class="btn btn-primary" ng-click="queryAllCardPayment()"></p>
+      </div>
+
+      <div class="div">
+        <form margin="30px" action="http://localhost:8002/addfivedata" method="get">
+          <input class="btn btn-primary" margin="30px" type="submit" value="上鏈">
+        </form>
+      </div>
+ 
+      <table id="all_cardpayment" class="table" align="center">
+
+        <tr>
+          <th>ID</th>
+          <th>AP_ID</th>
+          <th>CLASS_ID_UP</th>
+          <th>CLASS_ID_DN </th>
+          <th>BEG_DT</th>
+          <th>END_DT</th>
+          <th>WEEKDAY</th>
+          <th>RESERVE</th>
+          <th>AP_ID_UP </th>
+          <th>AP_ID_UP_PERIOD</th>
+          <th>ARRIVAL_TIME</th>
+          <th>AP_ID_DN</th>
+          <th>AP_ID_DN_NEXT</th>
+          <th>LEAVE_TIME </th>
+          <th>RAW_DATA</th>
+          <th>FLAG</th>
+        </tr>
+
+        <tr ng-repeat="cardpayment in all_cardpayment">
+          <td>{{cardpayment.Key}}</td>
+          <td>{{cardpayment.AP_ID}}</td>
+          <td>{{cardpayment.CLASS_ID_UP}}</td>
+          <td>{{cardpayment.CLASS_ID_DN}}</td>
+          <td>{{cardpayment.BEG_DT}}</td>
+          <td>{{cardpayment.END_DT}}</td>
+          <td>{{cardpayment.WEEKDAY}}</td>
+          <td>{{cardpayment.RESERVE}}</td>
+          <td>{{cardpayment.AP_ID_UP}}</td>
+          <td>{{cardpayment.AP_ID_UP_PERIOD}}</td>
+          <td>{{cardpayment.ARRIVAL_TIME}}</td>
+          <td>{{cardpayment.AP_ID_DN}}</td>
+          <td>{{cardpayment.AP_ID_DN_NEXT}}</td>
+          <td>{{cardpayment.LEAVE_TIME}}</td>
+          <td>{{cardpayment.RAW_DATA}}</td>
+          <td>{{cardpayment.FLAG}}</td>
+        </tr>
+      </table>
+
+      <div class="form-group">
+        <label>Query a Card Payment Record</label><br>
+        <h5 style="color:red;margin-bottom:2%" id="error_query">Error: Please enter a valid  Id</h5>
+        
+        Enter a ID: <input id="createName" class="form-control" type="text" placeholder="Ex: 3" ng-model="cardpayment_id">
+        <input id="querySubmit" type="submit" value="Query" class="btn btn-primary" ng-click="queryCardPayment()">
+      </div>
+
+      <table id="query_cardpayment" class="table" align="center">
+
+        <tr>
+          <th>ID</th>
+          <th>AcquiringBank</th>
+          <th>AcquiringDate</th>
+          <th>Size </th>
+          <th>ipfsHash</th>
+        </tr>
+
+        <tr>
+          <td>{{query_cardpayment.cprid}}</td>
+          <td>{{query_cardpayment.acquiringBank}}</td>
+          <td>{{query_cardpayment.acquiringDate}}</td>
+          <td>{{query_cardpayment.size}}</td>
+          <td>{{query_cardpayment.ipfsHash}}</td>
+        </tr>
+      </table>
+
+      <div class="form-group">
+        <label>Create Card Payment Record</label>
+        <h5 style="color:green;margin-bottom:2%" id="success_create">Success! Tx ID: {{create_cardpayment}}</h5>
+        <br>
+        Enter Card Payment ID: <input class="form-control" type="text"  ng-model="cardpayment.id">
+        Enter name of AcquiringBank: <input class="form-control" type="text"  ng-model="cardpayment.acquiringbank">
+        Enter date of AcquiringDate: <input id="createName" class="form-control" type="text" ng-model="cardpayment.acquiringdate"> 
+        Enter Size: <input id="createName" class="form-control" type="text"  ng-model="cardpayment.size">
+        Enter IPFS Hash: <input class="form-control" type="text"  ng-model="cardpayment.ipfsHash">
+        <input id="createSubmit" type="submit" value="Create" class="btn btn-primary" ng-click="recordCardPayment()"> 
+      </div>
+
+      <div class="form-group">
+        <label>Change Card Paymeny Size and IPFSHash</label><br>
+        <h5 style="color:green;margin-bottom:2%" id="success_holder">Success! Tx ID: {{change_value}}</h5>
+        <h5 style="color:red;margin-bottom:2%" id="error_holder">Error: Please enter a valid Id</h5>
+        Enter a Id : <input class="form-control" name="assetSelect"  ng-model="value.id">
+        Enter Size: <input class="form-control" name="assetSelect"  ng-model="value.newsize">
+        Enter IPFSHash: <input class="form-control" name="assetSelect"  ng-model="value.newipfshash">
+        <input id="transferSubmit" type="submit" value="Change" class="btn btn-primary" ng-click="changeValue()">
+      </div>
+
+    </div>
+  </body>
+    <!-- requiring the angular page -->
+    <script type="text/javascript" src="app.js"> </script>
+</html>
